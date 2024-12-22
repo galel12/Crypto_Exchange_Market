@@ -39,3 +39,4 @@
 /Users/galelharar/Desktop/Crypto exchange marketplace/crypto/obj/Debug/net8.0/crypto.pdb
 /Users/galelharar/Desktop/Crypto exchange marketplace/crypto/obj/Debug/net8.0/crypto.genruntimeconfig.cache
 /Users/galelharar/Desktop/Crypto exchange marketplace/crypto/obj/Debug/net8.0/ref/crypto.dll
+/Users/galelharar/Desktop/Crypto exchange marketplace/crypto/obj/Debug/net8.0/crypto.sourcelink.json
