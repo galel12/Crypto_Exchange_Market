@@ -14,7 +14,7 @@ namespace crypto.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-            private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public UserService(IUserRepository repo, IConfiguration config)
         {
@@ -24,7 +24,9 @@ namespace crypto.Services
 
         public User CreateUser(User user)
         {
-            //valid?
+            // Validate user input
+            if (string.IsNullOrEmpty(user.Username))
+                throw new ArgumentException("Username is required");
 
             //if not valid throw exception(something not valid)
 
