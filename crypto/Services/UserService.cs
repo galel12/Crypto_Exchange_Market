@@ -24,7 +24,9 @@ namespace crypto.Services
 
         public User CreateUser(User user)
         {
-            //valid?
+            // Validate user input
+            if (string.IsNullOrEmpty(user.Username))
+                throw new ArgumentException("Username is required");
 
             //if not valid throw exception(something not valid)
 

@@ -1,8 +1,10 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using crypto.Services;
 using crypto.Repositories;
 using crypto.Models;
+using crypto.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
 //Add Dependencies injection
 builder.Services.AddScoped<IUserService, UserService>();
@@ -74,6 +80,7 @@ builder.Services.AddAuthentication("Bearer")
 
 // Add Authorization services
 builder.Services.AddAuthorization(); // This line ensures that Authorization services are registered
+
 
 var app = builder.Build();
 
