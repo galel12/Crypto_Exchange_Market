@@ -14,7 +14,7 @@ namespace crypto.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-            private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public UserService(IUserRepository repo, IConfiguration config)
         {
