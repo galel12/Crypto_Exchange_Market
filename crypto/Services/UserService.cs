@@ -24,24 +24,53 @@ namespace crypto.Services
 
         public User CreateUser(User user)
         {
-            // Validate user input
+          // Validate user input
             if (string.IsNullOrEmpty(user.Username))
                 throw new ArgumentException("Username is required");
 
-            //if not valid throw exception(something not valid)
+            if (string.IsNullOrEmpty(user.HashPassword))
+                throw new ArgumentException("Password is required");
 
-            //if valid
+            // Check if the username already exists
+            if (_userRepository.GetUserByUsername(user.Username) != null)
+                throw new InvalidOperationException("Username already exists");
+
+            // Save the user
             return _userRepository.Save(user);
         }
 
         public User Update(int id, User updatedUser)
         {
-            throw new NotImplementedException();
+            var existingUser = _userRepository.GetById(id);
+            if (existingUser == null)
+                throw new KeyNotFoundException("User not found");
+
+            // Update user details
+            existingUser.Username = updatedUser.Username ?? existingUser.Username;
+            existingUser.HashPassword = updatedUser.HashPassword ?? existingUser.HashPassword;
+
+            // Save changes
+            return _userRepository.Update(existingUser);
         }
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.GetById(id);
+            if (user == null)
+                throw new KeyNotFoundException("User not found");
+
+            // Delete the user
+            return _userRepository.Delete(id);
+        }
+
+        public User GetUserById(int id)
+        {
+            return _userRepository.GetById(id);
+        }
+
+        public IEnumerable<User> GetAllUsers()
+        {
+            return _userRepository.GetAll();
         }
 
         public (User user, SecurityToken token) GetUserByLogin(string username, string password)

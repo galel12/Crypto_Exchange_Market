@@ -19,18 +19,76 @@ namespace crypto.Controllers
             _userService = userService;
         }
 
-        [HttpPost("signUp")]
+        [HttpPost]
         public IActionResult CreateUser([FromBody] User user)
+       {
+            try
+            {
+                var createdUser = _userService.CreateUser(user);
+                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/User/{id}
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(int id)
+        {
+            var user = _userService.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+            return Ok(user);
+        }
+
+        // PUT: api/User/{id}
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, [FromBody] User updatedUser)
         {
             try
             {
-                var newUser = _userService.CreateUser(user);
-                return Ok(newUser);
+                var user = _userService.Update(id, updatedUser);
+                if (user == null)
+                {
+                    return NotFound($"User with ID {id} not found.");
+                }
+                return Ok(user);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                return Conflict(ex.Message);
+                return BadRequest(ex.Message);
             }
+        }
+
+        // DELETE: api/User/{id}
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                var isDeleted = _userService.Delete(id);
+                if (!isDeleted)
+                {
+                    return NotFound($"User with ID {id} not found.");
+                }
+                return NoContent();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/User
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userService.GetAllUsers();
+            return Ok(users);
         }
     }
 }

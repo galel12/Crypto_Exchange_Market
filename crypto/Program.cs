@@ -16,11 +16,14 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))
+           .LogTo(Console.WriteLine, LogLevel.Information));
 
 //Add Dependencies injection
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<IUserRepository, InMemoryRep>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<DbContext, AppDbContext>();
+//builder.Services.AddSingleton<IUserRepository, InMemoryRep>();
 
 
 builder.Services.AddSwaggerGen(option =>

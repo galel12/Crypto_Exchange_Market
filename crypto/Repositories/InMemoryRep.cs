@@ -27,6 +27,11 @@ namespace crypto.Repositories
             throw new NotImplementedException();
         }
 
+        public User GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public User? GetUserByUsername(string username)
         {
             return _mockDb.FirstOrDefault((pair) => pair.Value.Username == username).Value;

@@ -3,8 +3,9 @@ using crypto.Models;
 
 namespace crypto.Repositories
 {
-    public interface IUserRepository : IRepository<User>
+     public interface IUserRepository : IRepository<User>
     {
-        User? GetUserByUsername(string username);
+        User GetUserByUsername(string username);
+        User GetById(int id); // Ensure this method is here
     }
 }
