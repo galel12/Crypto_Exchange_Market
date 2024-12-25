@@ -14,6 +14,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSpaStaticFiles(configuration =>
+{
+    configuration.RootPath = "crypto-client/dist"; // Path to the Vue.js built files
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))
@@ -92,9 +96,26 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseSpa(spa =>
+    {
+        spa.Options.SourcePath = "crypto-client";
+        spa.UseProxyToSpaDevelopmentServer("http://localhost:5173"); // Vue.js development server
+    });
 }
 
+// Serve static files for Vue.js in production
+app.UseExceptionHandler("/Error");
+app.UseHsts();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseSpaStaticFiles();
+
+app.UseSpa(spa =>
+    {
+        spa.Options.SourcePath = "crypto-client";
+    });
+
 app.UseAuthentication(); // Enable authentication middleware
 app.UseAuthorization();  // Enable authorization middleware
 
