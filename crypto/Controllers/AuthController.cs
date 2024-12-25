@@ -19,7 +19,7 @@ public class AuthController : ControllerBase
         _userService = service;
     }
 
-    [HttpPost("login")]
+    [HttpPost]
     public IActionResult Login([FromBody] LoginRequest request)
     {
         try
