@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
+import type { RouteLocationNormalized, NavigationGuardNext } from "vue-router";
 
-import SignUp from "../views/SignUp.vue";
+import SignUp from "../views/Signup.vue";
 import Login from "../views/Login.vue";
 import Wallet from "../views/Wallet.vue";
 
@@ -10,7 +11,7 @@ const routes = [
   {
     path: "/wallet",
     component: Wallet,
-    beforeEnter: (_to, _from, next) => {
+    beforeEnter: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
       const token = localStorage.getItem("token");
       if (token) {
         next();
