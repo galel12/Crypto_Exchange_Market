@@ -96,29 +96,27 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    app.UseSpa(spa =>
-    {
-        spa.Options.SourcePath = "crypto-client";
-        spa.UseProxyToSpaDevelopmentServer("http://localhost:5173"); // Vue.js development server
-    });
 }
-
-// Serve static files for Vue.js in production
 app.UseExceptionHandler("/Error");
-app.UseHsts();
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseSpaStaticFiles();
-
-app.UseSpa(spa =>
-    {
-        spa.Options.SourcePath = "crypto-client";
-    });
-
 app.UseAuthentication(); // Enable authentication middleware
 app.UseAuthorization();  // Enable authorization middleware
 
 app.MapControllers();
+
+// Serve static files for Vue.js in production
+
+app.UseHsts();
+app.UseHttpsRedirection();
+
+// app.UseSpaStaticFiles();
+
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSpa(spa =>
+//     {
+//         spa.Options.SourcePath = "crypto-client";
+//         spa.UseProxyToSpaDevelopmentServer("http://localhost:5173"); // Vue.js development server
+//     });
+// }
 
 app.Run();
