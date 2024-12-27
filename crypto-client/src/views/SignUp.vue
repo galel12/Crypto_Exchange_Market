@@ -1,53 +1,51 @@
 <template>
-  <div>
-    <h1>Sign Up</h1>
-    <form @submit.prevent="handleSignUp">
-      <div>
-        <label>Username:</label>
-        <input v-model="username" required />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input v-model="password" type="password" required />
-      </div>
+  <div class="signup-container">
+    <h2>Sign Up</h2>
+    <form @submit.prevent="signUp">
+      <label for="username">Username:</label>
+      <input id="username" v-model="username" type="text" />
+      
+      <label for="password">Password:</label>
+      <input id="password" v-model="password" type="password" />
+
       <button type="submit">Sign Up</button>
     </form>
-    <p v-if="message">{{ message }}</p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "SignUp",
-  setup() {
-    const username = ref("");
-    const password = ref("");
-    const message = ref("");
-
-    const handleSignUp = async () => {
-      try {
-        const response = await fetch("/api/User", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username: username.value, password: password.value }),
-        });
-
-        if (response.ok) {
-          message.value = "Sign up successful! Please log in.";
-        } else {
-          const error = await response.json();
-          message.value = error.message || "Sign up failed.";
-        }
-      } catch (err) {
-        message.value = "An error occurred. Please try again.";
-      }
+  data() {
+    return {
+      username: "",
+      password: "",
     };
-
-    return { username, password, message, handleSignUp };
+  },
+  methods: {
+    async signUp() {
+      try {
+        const response = await fetch("http://localhost:5040/api/Auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: this.username, password: this.password }),
+        });
+        if (!response.ok) throw new Error("Sign Up failed");
+        const data = await response.json();
+        console.log("Sign Up successful:", data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
   },
 });
 </script>
+
+<style scoped>
+.signup-container {
+  text-align: center;
+  margin: 2rem;
+}
+</style>

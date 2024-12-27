@@ -14,9 +14,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSpaStaticFiles(configuration =>
+// Add CORS
+builder.Services.AddCors(options =>
 {
-    configuration.RootPath = "crypto-client/dist"; // Path to the Vue.js built files
+    options.AddPolicy("AllowFrontend",
+        builder => builder.WithOrigins("http://localhost:5173") // Frontend URL
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -97,26 +101,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
 app.UseExceptionHandler("/Error");
+app.UseRouting();
+app.UseCors("AllowFrontend"); // Enable CORS middleware here
 app.UseAuthentication(); // Enable authentication middleware
 app.UseAuthorization();  // Enable authorization middleware
 
 app.MapControllers();
-
-// Serve static files for Vue.js in production
-
-app.UseHsts();
-app.UseHttpsRedirection();
-
-// app.UseSpaStaticFiles();
-
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSpa(spa =>
-//     {
-//         spa.Options.SourcePath = "crypto-client";
-//         spa.UseProxyToSpaDevelopmentServer("http://localhost:5173"); // Vue.js development server
-//     });
-// }
 
 app.Run();

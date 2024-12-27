@@ -1,57 +1,51 @@
 <template>
-  <div>
-    <h1>Login</h1>
-    <form @submit.prevent="handleLogin">
-      <div>
-        <label>Username:</label>
-        <input v-model="username" required />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input v-model="password" type="password" required />
-      </div>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form @submit.prevent="login">
+      <label for="username">Username:</label>
+      <input id="username" v-model="username" type="text" />
+      
+      <label for="password">Password:</label>
+      <input id="password" v-model="password" type="password" />
+
       <button type="submit">Login</button>
     </form>
-    <p v-if="message">{{ message }}</p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Login",
-  setup() {
-    const username = ref("");
-    const password = ref("");
-    const message = ref("");
-    const router = useRouter();
-
-    const handleLogin = async () => {
-      try {
-        const response = await fetch("/api/Auth", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username: username.value, password: password.value }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          localStorage.setItem("token", data.token); // Save JWT token
-          router.push("/wallet"); // Redirect to the wallet page
-        } else {
-          const error = await response.json();
-          message.value = error.message || "Login failed.";
-        }
-      } catch (err) {
-        message.value = "An error occurred. Please try again.";
-      }
+  data() {
+    return {
+      username: "",
+      password: "",
     };
-
-    return { username, password, message, handleLogin };
+  },
+  methods: {
+    async login() {
+      try {
+        const response = await fetch("http://localhost:5040/api/User", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: this.username, password: this.password }),
+        });
+        if (!response.ok) throw new Error("Login failed");
+        const data = await response.json();
+        console.log("Login successful:", data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
   },
 });
 </script>
+
+<style scoped>
+.login-container {
+  text-align: center;
+  margin: 2rem;
+}
+</style>
