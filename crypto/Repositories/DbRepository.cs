@@ -20,10 +20,10 @@ namespace crypto.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public T Save(T entity)
+        public async Task<T> SaveAsync(T entity)
         {
-            _dbSet.Add(entity);
-            _context.SaveChanges();
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 

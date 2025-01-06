@@ -5,7 +5,7 @@ namespace crypto.Repositories
 {
      public interface IUserRepository : IRepository<User>
     {
-        User GetUserByUsername(string username);
+        Task<User?> GetUserByUsernameAsync(string username);
         User GetById(int id); // Ensure this method is here
     }
 }

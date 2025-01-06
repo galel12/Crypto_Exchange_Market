@@ -20,18 +20,24 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Login([FromBody] LoginRequest request)
+   public async Task<IActionResult> Login([FromBody] LoginRequest request)
+{
+    try
     {
-        try
-        {
-            var loginResult = _userService.GetUserByLogin(request.Username, request.Password);
+        // Validate user credentials asynchronously
+        var loginResult = await _userService.GetUserByLoginAsync(request.Username, request.Password);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            return Ok(new { Token = tokenHandler.WriteToken(loginResult.token), User = loginResult.user });
-        }
-        catch (Exception ex)
-            {
-                return Conflict(ex.Message);
-            }
+        // Generate the JWT token
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenString = tokenHandler.WriteToken(loginResult.token);
+
+        // Return the token and user details
+        return Ok(new { Token = tokenString, User = loginResult.user });
     }
+    catch (Exception ex)
+    {
+        // Handle errors (e.g., invalid credentials)
+        return Conflict(ex.Message);
+    }
+}
 }

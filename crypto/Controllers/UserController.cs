@@ -20,11 +20,11 @@ namespace crypto.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] User user)
        {
             try
             {
-                var createdUser = _userService.CreateUser(user);
+                var createdUser = await _userService.CreateUserAsync(user);
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
             catch (System.Exception ex)

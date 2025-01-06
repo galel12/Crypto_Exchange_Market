@@ -37,6 +37,11 @@ namespace crypto.Repositories
             return _mockDb.FirstOrDefault((pair) => pair.Value.Username == username).Value;
         }
 
+        public Task<User?> GetUserByUsernameAsync(string username)
+        {
+            throw new NotImplementedException();
+        }
+
         public User Save(User entity)
         {
             //critical section
@@ -55,6 +60,11 @@ namespace crypto.Repositories
             System.Console.WriteLine($"user: {user}\n has created");
 
             return user;
+        }
+
+        public Task<User> SaveAsync(User entity)
+        {
+            throw new NotImplementedException();
         }
 
         public User Update(User entity)

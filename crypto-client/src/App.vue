@@ -4,8 +4,8 @@
     <header class="app-header">
       <h1 class="header-title">Crypto Exchange Marketplace</h1>
       <nav class="navigation">
-        <router-link to="/">Login</router-link>
-        <router-link to="/signup">Sign Up</router-link>
+        <router-link to="/Login">Login</router-link>
+        <router-link to="/signUp">Sign Up</router-link>
         <router-link to="/wallet">Wallet</router-link>
       </nav>
     </header>
@@ -71,3 +71,4 @@ export default {
   padding: 2rem;
 }
 </style>
+

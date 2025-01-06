@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using crypto.Models;
 using crypto.Repositories;
 using Microsoft.IdentityModel.Tokens;
+using BCrypt.Net;
 
 namespace crypto.Services
 {
@@ -22,7 +23,7 @@ namespace crypto.Services
             _configuration= config;
         }
 
-        public User CreateUser(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
           // Validate user input
             if (string.IsNullOrEmpty(user.Username))
@@ -30,13 +31,17 @@ namespace crypto.Services
 
             if (string.IsNullOrEmpty(user.HashPassword))
                 throw new ArgumentException("Password is required");
+                
+            // Hash the password with 13 salt rounds (work factor)
+            user.HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(user.HashPassword, 13);
 
             // Check if the username already exists
-            if (_userRepository.GetUserByUsername(user.Username) != null)
+            var existingUser = await _userRepository.GetUserByUsernameAsync(user.Username);
+            if (existingUser != null)
                 throw new InvalidOperationException("Username already exists");
 
             // Save the user
-            return _userRepository.Save(user);
+            return await _userRepository.SaveAsync(user);
         }
 
         public User Update(int id, User updatedUser)
@@ -47,6 +52,8 @@ namespace crypto.Services
 
             // Update user details
             existingUser.Username = updatedUser.Username ?? existingUser.Username;
+
+            updatedUser.HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(updatedUser.HashPassword, 13);
             existingUser.HashPassword = updatedUser.HashPassword ?? existingUser.HashPassword;
 
             // Save changes
@@ -73,26 +80,38 @@ namespace crypto.Services
             return _userRepository.GetAll();
         }
 
-        public (User user, SecurityToken token) GetUserByLogin(string username, string password)
+        public async Task<(User user, SecurityToken token)> GetUserByLoginAsync(string username, string password)
         {
-            var user = _userRepository.GetUserByUsername(username);
+            // Validate user credentials (using ValidateUserAsync)
+            var user = await ValidateUserAsync(username, password);
 
-            if(user == null)
-            {
-                throw new Exception("User not found");
-            }
+            // Generate the token
+            var token = createToken(user.Username);
 
-            if (user.HashPassword != password)
-            {
-                throw new Exception("Incorrect password");
-            }
-
-            return (user, createToken(user.Username));
+            // Return user and token
+            return (user, token);
         }
 
         public User GetUserByToken(SecurityToken token)
         {
             throw new NotImplementedException();
+        }
+
+         // Validate the password during login
+        public async Task<User?> ValidateUserAsync(string username, string password)
+        {
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+            if (user == null )
+            {
+                throw new Exception("User not found");
+            }
+            if(!BCrypt.Net.BCrypt.EnhancedVerify(password, user.HashPassword))
+            {
+                throw new Exception("Incorrect password");
+            }
+
+            return user; // Authentication successful
         }
 
         private SecurityToken createToken(string username)

@@ -12,9 +12,9 @@ namespace crypto.Repositories
     {
         public UserRepository(AppDbContext context) : base(context) { }
 
-        public User GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            return _dbSet.FirstOrDefault(u => u.Username == username);
+            return await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public User GetById(int id)
