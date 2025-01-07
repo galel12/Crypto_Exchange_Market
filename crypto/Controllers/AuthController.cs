@@ -34,10 +34,10 @@ public class AuthController : ControllerBase
         // Return the token and user details
         return Ok(new { Token = tokenString, User = loginResult.user });
     }
-    catch (Exception ex)
+    catch (Exception)
     {
         // Handle errors (e.g., invalid credentials)
-        return Conflict(ex.Message);
+        return Unauthorized("Invalid credentials.");
     }
 }
 }

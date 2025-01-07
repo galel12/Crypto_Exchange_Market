@@ -27,9 +27,9 @@ namespace crypto.Controllers
                 var createdUser = await _userService.CreateUserAsync(user);
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
-            catch (System.Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = "An error occurred while creating the user." });
             }
         }
 
@@ -40,7 +40,7 @@ namespace crypto.Controllers
             var user = _userService.GetUserById(id);
             if (user == null)
             {
-                return NotFound($"User with ID {id} not found.");
+                return NotFound(new { error = $"User with ID {id} not found." });
             }
             return Ok(user);
         }
@@ -54,13 +54,13 @@ namespace crypto.Controllers
                 var user = _userService.Update(id, updatedUser);
                 if (user == null)
                 {
-                    return NotFound($"User with ID {id} not found.");
+                    return NotFound(new { error = $"User with ID {id} not found." });
                 }
                 return Ok(user);
             }
-            catch (System.Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = "An error occurred while updating the user." });
             }
         }
 
@@ -73,13 +73,13 @@ namespace crypto.Controllers
                 var isDeleted = _userService.Delete(id);
                 if (!isDeleted)
                 {
-                    return NotFound($"User with ID {id} not found.");
+                    return NotFound(new { error = $"User with ID {id} not found." });
                 }
                 return NoContent();
             }
-            catch (System.Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = "An error occurred while deleting the user." });
             }
         }
 
