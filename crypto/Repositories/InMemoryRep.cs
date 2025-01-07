@@ -51,8 +51,8 @@ namespace crypto.Repositories
                 Id = id,
                 Name = entity.Name,
                 Username = entity.Username,
-                HashPassword = entity.HashPassword,
-                JWT = entity.JWT
+                HashPassword = entity.HashPassword
+           
             };
 
             _mockDb[id] = user;

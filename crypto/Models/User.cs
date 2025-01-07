@@ -11,6 +11,6 @@ namespace crypto.Models
         public string? Name {get; set;}
         public string? Username {get; set;}
         public string? HashPassword{ get; set;}
-        public string? JWT{get;set;}
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     }
 }
