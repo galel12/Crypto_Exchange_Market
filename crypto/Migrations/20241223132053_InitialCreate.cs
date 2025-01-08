@@ -19,8 +19,8 @@ namespace crypto.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Username = table.Column<string>(type: "text", nullable: true),
-                    HashPassword = table.Column<string>(type: "text", nullable: true),
-                    JWT = table.Column<string>(type: "text", nullable: true)
+                    HashPassword = table.Column<string>(type: "text", nullable: true)
+                    
                 },
                 constraints: table =>
                 {
