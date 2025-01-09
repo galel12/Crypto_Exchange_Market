@@ -3,6 +3,8 @@
     <h2>Login</h2>
     <!-- Error Message -->
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <!-- Success Message -->
+    <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
     <form @submit.prevent="login">
       <p>
         <label for="username">Username:</label>
@@ -26,11 +28,13 @@ export default defineComponent({
     return {
       username: "",
       password: "",
+      successMessage: "",
       errorMessage: "",
     };
   },
   methods: {
     async login() {
+      this.successMessage = "";
       this.errorMessage = ""; // Clear any existing error message
       try {
         const response = await fetch("http://localhost:5040/api/Auth", {
@@ -43,10 +47,15 @@ export default defineComponent({
           throw new Error(errorDetails.message || "Login failed");
         }
         const data = await response.json();
+        localStorage.setItem("token", data.token);
+        this.successMessage = "Login successful! Redirecting to your wallet...";
         console.log("Login successful:", data);
-        // Reset fields or redirect the user
-        this.username = "";
-        this.password = "";
+
+        setTimeout(() => {
+          this.$router.push("/wallet"); // Navigate to the wallet page after a delay
+        }, 2000); // Delay of 2 seconds to display the message
+
+
       } catch (error) {
         console.error("Error during login:", error);
         this.errorMessage = (error as Error).message || "An unexpected error occurred. Please try again."; // Display the error message on the UI
@@ -119,6 +128,13 @@ button:hover {
 
 .error-message {
   color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.success-message {
+  color: green;
   font-size: 14px;
   margin-bottom: 10px;
   text-align: center;

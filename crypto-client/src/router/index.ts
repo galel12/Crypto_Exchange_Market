@@ -6,7 +6,17 @@ import Wallet from "../components/Wallet.vue";
 const routes = [
   { path: "/", name: "Login", component: Login },
   { path: "/signup", name: "SignUp", component: SignUp },
-  { path: "/wallet", name: "Wallet", component: Wallet },
+  { path: "/wallet", name: "Wallet", component: Wallet,
+    beforeEnter: (_to: any, _from: any, _next: any) => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Access denied. Please login first.");
+        _next("/"); 
+      } else {
+        _next(); 
+      }
+    },
+  },
 ];
 
 const router = createRouter({
