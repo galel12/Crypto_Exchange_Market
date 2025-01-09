@@ -9,6 +9,7 @@ using crypto.Models;
 using crypto.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using BCrypt.Net;
+using crypto.Dtos;
 
 namespace crypto.Services
 {
@@ -23,22 +24,30 @@ namespace crypto.Services
             _configuration= config;
         }
 
-        public async Task<User> CreateUserAsync(User user)
+        public async Task<User> CreateUserAsync(NewUserDto newUserDto)
         {
           // Validate user input
-            if (string.IsNullOrEmpty(user.Username))
+            if (string.IsNullOrEmpty(newUserDto.Username))
                 throw new ArgumentException("Username is required");
 
-            if (string.IsNullOrEmpty(user.HashPassword))
+            if (string.IsNullOrEmpty(newUserDto.Password))
                 throw new ArgumentException("Password is required");
                 
             // Hash the password with 13 salt rounds (work factor)
-            user.HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(user.HashPassword, 13);
+            var hashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(newUserDto.Password, 13);
 
             // Check if the username already exists
-            var existingUser = await _userRepository.GetUserByUsernameAsync(user.Username);
+            var existingUser = await _userRepository.GetUserByUsernameAsync(newUserDto.Username);
             if (existingUser != null)
                 throw new InvalidOperationException("Username already exists");
+
+            // Create the user object
+            var user = new User
+            {
+                Username = newUserDto.Username,
+                HashPassword = hashedPassword,
+                DateCreated = DateTime.UtcNow // Automatically set CreatedAt
+            };
 
             // Save the user
             return await _userRepository.SaveAsync(user);

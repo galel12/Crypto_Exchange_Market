@@ -91,6 +91,10 @@ export default {
   background-color: #155dc9;
 }
 
+body.dark-mode .navigation a:hover {
+  background-color: #555;
+}
+
 /* Main Content */
 .main-content {
   display: flex;

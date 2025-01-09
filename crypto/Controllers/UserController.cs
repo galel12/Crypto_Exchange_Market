@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using crypto.Models;
 using crypto.Services;
+using crypto.Dtos;
 
 namespace crypto.Controllers
 {
@@ -20,11 +21,11 @@ namespace crypto.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] NewUserDto newUserDto)
        {
             try
             {
-                var createdUser = await _userService.CreateUserAsync(user);
+                var createdUser = await _userService.CreateUserAsync(newUserDto);
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
             catch (Exception)

@@ -25,17 +25,8 @@ body.dark-mode *{
 }
 
 body.dark-mode .app-header {
-  background-color: black;
+  background-color: rgb(56, 56, 56);
   color: white;
-}
-
-/* Main Content */
-.main-content {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
 }
 
 body.dark-mode .left-content {
@@ -43,56 +34,31 @@ body.dark-mode .left-content {
 }
 
 /* Login Container */
-.login-container {
-  background-color: white; /* Light mode */
-  color: black;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-}
-
 body.dark-mode .login-container {
   background-color: #1e1e1e;
   color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 12px 24px rgba(81, 81, 81, 0.8);
 }
 
 body.dark-mode .signup-container {
   background-color: #1e1e1e;
   color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 12px 24px rgba(81, 81, 81, 0.8);
 }
 
 body.dark-mode .wallet-container{
   background-color: #1e1e1e;
   color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 12px 24px rgba(81, 81, 81, 0.8);
 }
 /* Input Fields */
-input {
-  background-color: white;
-  color: black;
-  border: 1px solid #1877f2;
-  transition: all 0.3s ease-in-out;
-}
-
 body.dark-mode input {
   background-color: #333;
   color: white;
-  border: 1px solid #00ff08;
+  border: 1px solid #333(24, 56, 25);
 }
 
-/* Buttons */
-button {
-  background-color: #f0f0f0; /* Light mode */
-  color: black;
-  border: none;
-  transition: all 0.3s ease-in-out;
-}
-
-button:hover {
-  background-color: #e0e0e0;
-}
-
+/* Buttons Dark-Mode */
 body.dark-mode button {
   background-color: #444; /* Dark mode */
   color: white;

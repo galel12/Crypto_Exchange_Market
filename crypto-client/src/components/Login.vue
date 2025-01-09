@@ -1,12 +1,13 @@
 <template>
   <div class="login-container">
     <h2>Login</h2>
+    <!-- Error Message -->
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     <form @submit.prevent="login">
       <p>
         <label for="username">Username:</label>
         <input id="username" v-model="username" type="text" />
       </p>
-
       <p>
         <label for="password">Password:</label>
         <input id="password" v-model="password" type="password" />
@@ -25,21 +26,30 @@ export default defineComponent({
     return {
       username: "",
       password: "",
+      errorMessage: "",
     };
   },
   methods: {
     async login() {
+      this.errorMessage = ""; // Clear any existing error message
       try {
         const response = await fetch("http://localhost:5040/api/Auth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: this.username, password: this.password }),
         });
-        if (!response.ok) throw new Error("Login failed");
+        if (!response.ok) {
+          const errorDetails = await response.json();
+          throw new Error(errorDetails.message || "Login failed");
+        }
         const data = await response.json();
         console.log("Login successful:", data);
+        // Reset fields or redirect the user
+        this.username = "";
+        this.password = "";
       } catch (error) {
-        console.error(error);
+        console.error("Error during login:", error);
+        this.errorMessage = (error as Error).message || "An unexpected error occurred. Please try again."; // Display the error message on the UI
       }
     },
   },
@@ -52,8 +62,8 @@ export default defineComponent({
   margin: auto;
   padding: 30px;
   border-radius: 20px;
-  background: white;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -64,7 +74,8 @@ h2 {
   text-align: center;
   margin-bottom: 20px;
   color: #333;
-  font-size: 32px; /* Increased size */
+  font-size: 32px;
+  /* Increased size */
   font-weight: bold;
 }
 
@@ -76,7 +87,8 @@ label {
   display: block;
   margin-bottom: 5px;
   color: #555;
-  font-size: 16px; /* Increased size */
+  font-size: 16px;
+  /* Increased size */
   font-weight: bold;
 }
 
@@ -103,5 +115,12 @@ button {
 
 button:hover {
   background-color: #41454b;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 </style>
