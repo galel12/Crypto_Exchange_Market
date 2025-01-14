@@ -5,7 +5,7 @@
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     <!-- Success Message -->
     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-    <form @submit.prevent="login">
+    <form @submit.prevent="handleLogin">
       <p>
         <label for="username">Username:</label>
         <input id="username" v-model="username" type="text" />
@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useAuthStore } from "@/stores/Auth";
 
 export default defineComponent({
   name: "Login",
@@ -28,55 +29,52 @@ export default defineComponent({
     return {
       username: "",
       password: "",
-      successMessage: "",
-      errorMessage: "",
     };
   },
+  computed: {
+    // Map success and error messages from the store
+    successMessage() {
+      return this.authStore.successMessage;
+    },
+    errorMessage() {
+      return this.authStore.errorMessage;
+    },
+  },
   methods: {
-    async login() {
-      this.successMessage = "";
-      this.errorMessage = ""; // Clear any existing error message
+    async handleLogin() {
       try {
-        const response = await fetch("http://localhost:5040/api/Auth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: this.username, password: this.password }),
+        await this.authStore.login({
+          username: this.username,
+          password: this.password,
         });
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          throw new Error(errorDetails.message || "Login failed");
-        }
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
-        this.successMessage = "Login successful! Redirecting to your wallet...";
-        console.log("Login successful:", data);
 
-        setTimeout(() => {
-          this.$router.push("/wallet"); // Navigate to the wallet page after a delay
-        }, 2000); // Delay of 2 seconds to display the message
-
-
+        // Redirect to the wallet after successful login
+        this.$router.push("/wallet");
       } catch (error) {
-        console.error("Error during login:", error);
-        this.errorMessage = (error as Error).message || "An unexpected error occurred. Please try again."; // Display the error message on the UI
+        console.error("Login failed:", error);
       }
     },
+  },
+  setup() {
+    const authStore = useAuthStore(); // Use the Pinia store
+    return { authStore };
+  },
+  beforeUnmount() {
+    // Clear messages when leaving the component
+    this.authStore.successMessage = "";
+    this.authStore.errorMessage = "";
   },
 });
 </script>
 
 <style scoped>
 .login-container {
-  width: 400px;
-  margin: auto;
-  padding: 30px;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
   border-radius: 20px;
   background-color: white;
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 h2 {
@@ -114,7 +112,7 @@ button {
   width: 100%;
   padding: 10px;
   background-color: #000000;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 10px;
   font-size: 20px;

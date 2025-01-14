@@ -21,9 +21,11 @@
         <p>Trade cryptocurrencies easily and securely.</p>
       </div>
       <div class="right-content">
-        <transition name="fade" mode="out-in">
-          <router-view :key="$route.fullPath" />
-        </transition>
+        <keep-alive>
+          <transition name="fade" mode="out-in">
+            <router-view :key="$route.name" />
+          </transition>
+        </keep-alive>
       </div>
     </main>
   </div>
@@ -97,51 +99,58 @@ body.dark-mode .navigation a:hover {
 
 /* Main Content */
 .main-content {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem;
+  margin: 20px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr;
+  gap: 5%;
+  margin-top: 30vh;
+  background-color: white;
 }
 
 body.dark-mode .main-content {
-  background-color: #121212; /* Matches the page background */
-  color: white; /* Text color for the main content */
+  background-color: #121212;
+  /* Matches the page background */
+  color: white;
+  /* Text color for the main content */
 }
 
 .left-content {
-  flex: 1;
-  padding: 2rem;
-  color: #333;
+  justify-self: start;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 body.dark-mode .left-content {
-  color: white; /* Make the text white */
+  color: white;
+  /* Make the text white */
 }
 
 .left-content h2 {
-  font-size: 36px; /* Bigger text */
+  font-size: 36px;
   font-weight: bold;
   margin-bottom: 10px;
   color: #333;
 }
 
 .left-content p {
-  font-size: 25px; /* Larger subtitle */
-  color: #666; /* Subtle color */
+  font-size: 25px;
+  /* Larger subtitle */
+  color: #666;
+  /* Subtle color */
 }
 
 .right-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-self: start;
 }
 
 body.dark-mode .right-content {
-  background-color: #1e1e1e; /* Slightly lighter for contrast */
-  color: white; /* Text color */
+  background-color: #1e1e1e;
+  /* Slightly lighter for contrast */
+  color: white;
+  /* Text color */
 }
 
 /* Dark Mode Toggle Button */
@@ -154,10 +163,14 @@ body.dark-mode .right-content {
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  position:fixed ; /* Fix the button to the viewport */
-  bottom: 20px; /* Distance from the bottom */
-  right: 20px; /* Distance from the right */
-  z-index: 1000; /* Ensure it appears above other elements */
+  position: fixed;
+  /* Fix the button to the viewport */
+  bottom: 20px;
+  /* Distance from the bottom */
+  right: 20px;
+  /* Distance from the right */
+  z-index: 1000;
+  /* Ensure it appears above other elements */
   box-sizing: border-box;
 }
 
@@ -176,4 +189,3 @@ body.dark-mode .right-content {
   opacity: 0;
 }
 </style>
-

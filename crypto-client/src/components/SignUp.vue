@@ -1,7 +1,9 @@
 <template>
   <div class="signup-container">
     <h2>Sign Up</h2>
-    <form @submit.prevent="signUp">
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
+    <form @submit.prevent="handleSignUp">
       <p>
         <label for="username">Username:</label>
         <input id="username" v-model="username" type="text" />
@@ -17,6 +19,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useAuthStore } from "@/stores/Auth";
 
 export default defineComponent({
   name: "SignUp",
@@ -26,37 +29,50 @@ export default defineComponent({
       password: "",
     };
   },
+  computed: {
+    successMessage() {
+      return this.authStore.successMessage;
+    },
+    errorMessage() {
+      return this.authStore.errorMessage;
+    },
+  },
   methods: {
-    async signUp() {
+    async handleSignUp() {
       try {
-        const response = await fetch("http://localhost:5040/api/User", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: this.username, password: this.password }),
+        await this.authStore.signUp({
+          username: this.username,
+          password: this.password,
         });
-        if (!response.ok) throw new Error("Sign Up failed");
-        const data = await response.json();
-        console.log("Sign Up successful:", data);
+
+        // Redirect to the login page after successful sign-up
+        this.$router.push("/");
       } catch (error) {
-        console.error(error);
+        console.error("Sign-up failed:", error);
       }
     },
+  },
+  setup() {
+    const authStore = useAuthStore();
+    return { authStore };
+  },
+  beforeUnmount() {
+    // Clear messages when leaving the component
+    this.authStore.successMessage = "";
+    this.authStore.errorMessage = "";
   },
 });
 </script>
 
 <style scoped>
 .signup-container {
-  width: 400px;
-  margin: auto;
-  padding: 30px;
+  width: 100%; 
+  max-width: 400px; 
+  /* margin: 0 auto; */
+  padding: 40px;
   border-radius: 20px;
-  background: white;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  background-color: white;
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
 }
 
 h2 {
@@ -102,5 +118,12 @@ button {
 
 button:hover {
   background-color: #41454b;
+}
+
+.success-message {
+  color: green;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 </style>
