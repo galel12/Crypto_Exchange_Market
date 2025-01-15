@@ -20,51 +20,53 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 import { useAuthStore } from "@/stores/Auth";
+import { useRouter } from "vue-router";
 
-export default defineComponent({
+export default {
   name: "Login",
-  data() {
-    return {
-      username: "",
-      password: "",
-    };
-  },
-  computed: {
-    // Map success and error messages from the store
-    successMessage() {
-      return this.authStore.successMessage;
-    },
-    errorMessage() {
-      return this.authStore.errorMessage;
-    },
-  },
-  methods: {
-    async handleLogin() {
-      try {
-        await this.authStore.login({
-          username: this.username,
-          password: this.password,
-        });
+  setup() {
+    // State variables
+    const username = ref("");
+    const password = ref("");
 
-        // Redirect to the wallet after successful login
-        this.$router.push("/wallet");
+    // Access the Auth store
+    const authStore = useAuthStore();
+
+    // Access Vue Router
+    const router = useRouter();
+
+    // Computed properties for messages
+    const successMessage = computed(() => authStore.successMessage);
+    const errorMessage = computed(() => authStore.errorMessage);
+
+    // Handle login logic
+    const handleLogin = async () => {
+      try {
+        await authStore.login({ username: username.value, password: password.value });
+        router.push("/wallet"); // Redirect to the wallet after successful login
       } catch (error) {
         console.error("Login failed:", error);
       }
-    },
+    };
+
+    // Clear messages on component unmount
+    onUnmounted(() => {
+      authStore.successMessage = "";
+      authStore.errorMessage = "";
+    });
+
+    // Return state and methods for the template
+    return {
+      username,
+      password,
+      successMessage,
+      errorMessage,
+      handleLogin,
+    };
   },
-  setup() {
-    const authStore = useAuthStore(); // Use the Pinia store
-    return { authStore };
-  },
-  beforeUnmount() {
-    // Clear messages when leaving the component
-    this.authStore.successMessage = "";
-    this.authStore.errorMessage = "";
-  },
-});
+};
 </script>
 
 <style scoped>
@@ -82,7 +84,6 @@ h2 {
   margin-bottom: 20px;
   color: #333;
   font-size: 32px;
-  /* Increased size */
   font-weight: bold;
 }
 
@@ -95,7 +96,6 @@ label {
   margin-bottom: 5px;
   color: #555;
   font-size: 16px;
-  /* Increased size */
   font-weight: bold;
 }
 

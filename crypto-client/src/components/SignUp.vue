@@ -18,57 +18,58 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 import { useAuthStore } from "@/stores/Auth";
+import { useRouter } from "vue-router";
 
-export default defineComponent({
-  name: "SignUp",
-  data() {
-    return {
-      username: "",
-      password: "",
-    };
-  },
-  computed: {
-    successMessage() {
-      return this.authStore.successMessage;
-    },
-    errorMessage() {
-      return this.authStore.errorMessage;
-    },
-  },
-  methods: {
-    async handleSignUp() {
+export default {
+  setup() {
+    // State variables
+    const username = ref("");
+    const password = ref("");
+
+    // Access the Auth store
+    const authStore = useAuthStore();
+
+    // Access Vue Router
+    const router = useRouter();
+
+    // Computed properties for messages
+    const successMessage = computed(() => authStore.successMessage);
+    const errorMessage = computed(() => authStore.errorMessage);
+
+    // Handle sign-up logic
+    const handleSignUp = async () => {
       try {
-        await this.authStore.signUp({
-          username: this.username,
-          password: this.password,
-        });
-
-        // Redirect to the login page after successful sign-up
-        this.$router.push("/");
+        await authStore.signUp({ username: username.value, password: password.value });
+        router.push("/"); // Redirect to the login page after successful sign-up
       } catch (error) {
         console.error("Sign-up failed:", error);
       }
-    },
+    };
+
+    // Clear messages on component unmount
+    onUnmounted(() => {
+      authStore.successMessage = "";
+      authStore.errorMessage = "";
+    });
+
+    // Return state and methods for the template
+    return {
+      username,
+      password,
+      successMessage,
+      errorMessage,
+      handleSignUp,
+    };
   },
-  setup() {
-    const authStore = useAuthStore();
-    return { authStore };
-  },
-  beforeUnmount() {
-    // Clear messages when leaving the component
-    this.authStore.successMessage = "";
-    this.authStore.errorMessage = "";
-  },
-});
+};
 </script>
 
 <style scoped>
 .signup-container {
-  width: 100%; 
-  max-width: 400px; 
-  /* margin: 0 auto; */
+  width: 100%;
+  max-width: 400px;
   padding: 40px;
   border-radius: 20px;
   background-color: white;
@@ -79,7 +80,7 @@ h2 {
   text-align: center;
   margin-bottom: 20px;
   color: #333;
-  font-size: 32px; /* Increased size */
+  font-size: 32px;
   font-weight: bold;
 }
 
@@ -91,7 +92,7 @@ label {
   display: block;
   margin-bottom: 5px;
   color: #555;
-  font-size: 16px; /* Increased size */
+  font-size: 16px;
   font-weight: bold;
 }
 

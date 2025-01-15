@@ -31,24 +31,31 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { ref } from "vue";
+
 export default {
   name: "App",
-  data() {
-    return {
-      darkMode: false, // State for dark mode
-    };
-  },
-  methods: {
-    toggleDarkMode() {
-      this.darkMode = !this.darkMode;
-      console.log("Dark mode toggled:", this.darkMode);
-      if (this.darkMode) {
+  setup() {
+    // Reactive variable for dark mode state
+    const darkMode = ref(false);
+
+    // Function to toggle dark mode
+    const toggleDarkMode = () => {
+      darkMode.value = !darkMode.value;
+      console.log("Dark mode toggled:", darkMode.value);
+      if (darkMode.value) {
         document.body.classList.add("dark-mode");
       } else {
         document.body.classList.remove("dark-mode");
       }
-    },
+    };
+
+    // Return variables and methods to the template
+    return {
+      darkMode,
+      toggleDarkMode,
+    };
   },
 };
 </script>
@@ -62,6 +69,10 @@ export default {
   background: linear-gradient(to bottom, #e4f0f6, #ffffff);
   color: #333;
   font-family: Arial, sans-serif;
+}
+
+body.dark-mode .app-container {
+  background: black;
 }
 
 /* Header */
@@ -105,14 +116,12 @@ body.dark-mode .navigation a:hover {
   grid-template-rows: 1fr;
   gap: 5%;
   margin-top: 30vh;
-  background-color: white;
+ 
 }
 
 body.dark-mode .main-content {
   background-color: #121212;
-  /* Matches the page background */
   color: white;
-  /* Text color for the main content */
 }
 
 .left-content {
@@ -124,8 +133,8 @@ body.dark-mode .main-content {
 }
 
 body.dark-mode .left-content {
+  background-color: #121212;
   color: white;
-  /* Make the text white */
 }
 
 .left-content h2 {
@@ -137,20 +146,11 @@ body.dark-mode .left-content {
 
 .left-content p {
   font-size: 25px;
-  /* Larger subtitle */
   color: #666;
-  /* Subtle color */
 }
 
 .right-content {
   justify-self: start;
-}
-
-body.dark-mode .right-content {
-  background-color: #1e1e1e;
-  /* Slightly lighter for contrast */
-  color: white;
-  /* Text color */
 }
 
 /* Dark Mode Toggle Button */
@@ -164,13 +164,9 @@ body.dark-mode .right-content {
   cursor: pointer;
   transition: background-color 0.3s ease;
   position: fixed;
-  /* Fix the button to the viewport */
   bottom: 20px;
-  /* Distance from the bottom */
   right: 20px;
-  /* Distance from the right */
   z-index: 1000;
-  /* Ensure it appears above other elements */
   box-sizing: border-box;
 }
 

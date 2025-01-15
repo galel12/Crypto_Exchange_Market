@@ -9,28 +9,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import { useAuthStore } from "@/stores/Auth";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Wallet",
-  data() {
+  setup() {
+    // Access the Auth store and Vue Router
     const authStore = useAuthStore();
-    return {
-      username: authStore.user?.username || "Guest", // Initialize username from the store
-    };
-  },
-  methods: {
-    handleLogout() {
-      const authStore = useAuthStore(); // Access the Auth store
+    const router = useRouter();
+
+    // Computed property for username
+    const username = computed(() => authStore.user?.username || "Guest");
+
+    // Logout method
+    const handleLogout = () => {
       authStore.logout(); // Log out the user
-      this.$router.push("/"); // Redirect to the login page
-    },
+      router.push("/"); // Redirect to the login page
+    };
+
+    // Return bindings for the template
+    return {
+      username,
+      handleLogout,
+    };
   },
 });
 </script>
 
-<style>
+<style scoped>
 .wallet-container {
   width: 100%;
   max-width: 400px;
@@ -39,6 +47,7 @@ export default defineComponent({
   background-color: white;
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
 }
+
 button {
   width: 100%;
   padding: 10px;

@@ -29,10 +29,6 @@ body.dark-mode .app-header {
   color: white;
 }
 
-body.dark-mode .left-content {
-  color: white;
-}
-
 /* Login Container */
 body.dark-mode .login-container {
   background-color: #1e1e1e;
