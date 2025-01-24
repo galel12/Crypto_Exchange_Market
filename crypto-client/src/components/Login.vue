@@ -8,12 +8,13 @@
     <form @submit.prevent="handleLogin">
       <p>
         <label for="username">Username:</label>
-        <input id="username" v-model="username" type="text" />
+        <input id="username" v-model.trim="username" type="text" />
       </p>
       <p>
         <label for="password">Password:</label>
-        <input id="password" v-model="password" type="password" />
+        <input id="password" v-model.trim="password" type="password" />
       </p>
+      <p v-if="!formIsValid">Please enter a valid Username and Password (must be at least 1 character long!) </p> 
       <button type="submit">Login</button>
     </form>
   </div>
@@ -21,7 +22,7 @@
 
 <script lang="ts">
 import { ref, computed, onUnmounted } from "vue";
-import { useAuthStore } from "@/stores/Auth";
+import { useAuthStore } from "../stores/Auth";
 import { useRouter } from "vue-router";
 
 export default {
@@ -30,6 +31,8 @@ export default {
     // State variables
     const username = ref("");
     const password = ref("");
+
+    const formIsValid = ref(true);
 
     // Access the Auth store
     const authStore = useAuthStore();
@@ -43,6 +46,16 @@ export default {
 
     // Handle login logic
     const handleLogin = async () => {
+      // Validate form before proceeding
+      formIsValid.value = username.value.length > 0 && password.value.length > 0;
+
+      if (!formIsValid.value) {
+        authStore.successMessage = "";
+        authStore.errorMessage = "";
+        console.error("Form is invalid. Please fill in all fields.");
+        return;
+      }
+     
       try {
         await authStore.login({ username: username.value, password: password.value });
         router.push("/wallet"); // Redirect to the wallet after successful login
@@ -64,6 +77,7 @@ export default {
       successMessage,
       errorMessage,
       handleLogin,
+      formIsValid,
     };
   },
 };
@@ -77,6 +91,7 @@ export default {
   border-radius: 20px;
   background-color: white;
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
+  justify-self: center;
 }
 
 h2 {

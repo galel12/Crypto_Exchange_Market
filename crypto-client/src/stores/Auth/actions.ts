@@ -25,18 +25,20 @@ export const actions: {
         body: JSON.stringify(payload),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorDetails = await response.json();
-        throw new Error(errorDetails.message || "Login failed");
+        console.log(data);
+        throw new Error(data.message || "Login failed");
       }
 
-      const data = await response.json();
       this.user = data.user;
       this.token = data.token;
 
       // Save the token to localStorage for persistence
-      if (this.token) {
+      if (this.token && this.user) {
         localStorage.setItem("token", this.token);
+        localStorage.setItem('userName', this.user.username);
       } else {
         console.warn("Token is null, not saving to localStorage");
       }
@@ -76,8 +78,9 @@ export const actions: {
       this.token = data.token;
 
       // Save the token to localStorage for persistence
-      if (this.token) {
+      if (this.token && this.user) {
         localStorage.setItem("token", this.token);
+        localStorage.setItem('userName', this.user.username);
       } else {
         console.warn("Token is null, not saving to localStorage");
       }
@@ -98,5 +101,6 @@ export const actions: {
     this.user = null;
     this.token = null;
     localStorage.removeItem("token"); // Clear token from localStorage
+    localStorage.removeItem("userName"); // Clear user Name from localStorage
   },
 };

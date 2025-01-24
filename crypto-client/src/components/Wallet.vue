@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import { useAuthStore } from "@/stores/Auth";
+import { useAuthStore } from "../stores/Auth";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -46,6 +46,7 @@ export default defineComponent({
   border-radius: 20px;
   background-color: white;
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
+  justify-self: center;
 }
 
 button {

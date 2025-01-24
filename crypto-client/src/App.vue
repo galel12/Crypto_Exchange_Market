@@ -16,29 +16,31 @@
 
     <!-- Split Content -->
     <main class="main-content">
-      <div class="left-content">
+      <div v-if="isAuthPage" class="left-content">
         <h2>Welcome to Crypto Exchange Marketplace</h2>
         <p>Trade cryptocurrencies easily and securely.</p>
       </div>
       <div class="right-content">
-        <keep-alive>
+        <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
-            <router-view :key="$route.name" />
+            <component :is="Component" />
           </transition>
-        </keep-alive>
+        </router-view>
       </div>
     </main>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 
 export default {
   name: "App",
   setup() {
     // Reactive variable for dark mode state
     const darkMode = ref(false);
+    const route = useRoute();
 
     // Function to toggle dark mode
     const toggleDarkMode = () => {
@@ -51,10 +53,15 @@ export default {
       }
     };
 
+    const isAuthPage = computed(() => {
+      return route.name === 'Login' || route.name === 'SignUp';
+    });
+
     // Return variables and methods to the template
     return {
       darkMode,
       toggleDarkMode,
+      isAuthPage,
     };
   },
 };
@@ -112,11 +119,10 @@ body.dark-mode .navigation a:hover {
 .main-content {
   margin: 20px;
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 5%;
   margin-top: 30vh;
- 
+
 }
 
 body.dark-mode .main-content {
@@ -150,7 +156,9 @@ body.dark-mode .left-content {
 }
 
 .right-content {
-  justify-self: start;
+  align-self: center;
+  grid-column-start: 2;
+  grid-column-end: 3;
 }
 
 /* Dark Mode Toggle Button */
