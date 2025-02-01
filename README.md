@@ -29,7 +29,7 @@ This project is currently a work in progress. The following features are planned
 ### Prerequisites:
 - .NET 8.0 SDK
 - Node.js (for the frontend)
-- SQL Server
+- Docker (for PostgreSQL)
 
 ## Setup
 
