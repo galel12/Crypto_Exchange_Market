@@ -21,7 +21,7 @@ This project is currently a work in progress. The following features are planned
 
 - **Backend**: ASP.NET Core
 - **Frontend**: Vue.js
-- **Database**: Entity Framework Core with SQL Server
+- **Database**: PostgreSQL (using Docker)
 - **Authentication**: JWT (JSON Web Tokens)
 - **Testing**: xUnit, Moq, Microsoft.AspNetCore.Mvc.Testing
 
