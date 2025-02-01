@@ -53,7 +53,7 @@ This project is currently a work in progress. The following features are planned
     ```sh
     dotnet restore
     ```
-    - Update the appsettings.json file with your database connection string
+    - Update the  `appsettings.json` file with your database connection string
     - Apply the database migrations:
     ```sh
     dotnet ef database update
