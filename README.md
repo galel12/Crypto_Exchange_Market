@@ -36,7 +36,7 @@ This project is currently a work in progress. The following features are planned
 1. **Clone the repository**
 2. **Database setup**:
     - Ensure Docker is installed and running.
-    - Navigate to the root directory:
+    - Navigate to the `root` directory:
     ```sh
     cd crypto/root
     ```
@@ -45,7 +45,7 @@ This project is currently a work in progress. The following features are planned
     docker-compose up
     ```
 4. **Backend Setup**:
-    - Navigate to the crypto directory
+    - Navigate to the `crypto` directory
     ```sh
     cd crypto
     ```
@@ -63,7 +63,7 @@ This project is currently a work in progress. The following features are planned
     dotnet run
     ```
 5. **Frontend Setup**:
-    - Navigate to the crypto-client directory
+    - Navigate to the `crypto-client` directory
     ```sh
     cd ../crypto-client
     ```
