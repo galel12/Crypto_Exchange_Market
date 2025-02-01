@@ -34,7 +34,17 @@ This project is currently a work in progress. The following features are planned
 ## Setup
 
 1. **Clone the repository**
-2. **Backend Setup**:
+2. **Database setup**:
+    - Ensure Docker is installed and running.
+    - Navigate to the root directory:
+    ```sh
+    cd crypto/root
+    ```
+    - Start the PostgreSQL container using Docker Compose:
+    ```sh
+    docker-compose up
+    ```
+4. **Backend Setup**:
     - Navigate to the crypto directory
     ```sh
     cd crypto
@@ -52,7 +62,7 @@ This project is currently a work in progress. The following features are planned
     ```sh
     dotnet run
     ```
-3. **Frontend Setup**:
+5. **Frontend Setup**:
     - Navigate to the crypto-client directory
     ```sh
     cd ../crypto-client
