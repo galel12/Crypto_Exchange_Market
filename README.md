@@ -43,7 +43,7 @@ Crypto-Exchange-Marketplace/
 │   ├── Models/           # Database models (e.g., User.cs)
 │   ├── Dtos/             # Data Transfer Objects (e.g., NewUserDto.cs)
 │   ├── Data/             # Database context (e.g., AppDbContext.cs)
-|   ├── root/             # Docker configuration for PostgreSQL (docker-compose.yml)
+│   ├── Docker/           # Docker configuration for PostgreSQL (docker-compose.yml)
 │   ├── appsettings.json  # Configuration file for DB connection, JWT, etc.
 │   ├── Program.cs        # Main entry point of the backend and application configuration
 │
@@ -80,9 +80,9 @@ Before setting up the project, ensure you have the following installed:
 1. **Clone the repository**
 2. **Database setup**:
     - Ensure Docker is installed and running.
-    - Navigate to the `root` directory:
+    - Navigate to the `Docker` directory:
     ```sh
-    cd crypto/root
+    cd crypto/Docker
     ```
     - Ensure Docker Compose is installed
     - Start the PostgreSQL container using Docker Compose:
