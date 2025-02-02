@@ -148,5 +148,10 @@ namespace crypto.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.CreateToken(tokenDescriptor);
         }
+
+        public Task<User> GetUserByUsernameAsync(string username)
+        {
+            return _userRepository.GetUserByUsernameAsync(username);
+        }
     }
 }

@@ -28,9 +28,17 @@ namespace crypto.Controllers
                 var createdUser = await _userService.CreateUserAsync(newUserDto);
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
             catch (Exception)
             {
-                return BadRequest(new { error = "An error occurred while creating the user." });
+                return StatusCode(500,  "An error occurred while creating the user." );
             }
         }
 
