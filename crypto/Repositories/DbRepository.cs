@@ -29,7 +29,10 @@ namespace crypto.Repositories
 
         public T Get(T entity)
         {
-            return _dbSet.Find(entity);
+            var foundEntity = _dbSet.Find(entity);
+            if (foundEntity == null)
+                throw new InvalidOperationException("Entity not found.");
+            return foundEntity;
         }
 
         public T Update(T entity)

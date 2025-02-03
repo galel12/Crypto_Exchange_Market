@@ -81,7 +81,10 @@ namespace crypto.Services
 
         public User GetUserById(int id)
         {
-            return _userRepository.GetById(id);
+            var user = _userRepository.GetById(id);
+            if (user == null)
+                throw new KeyNotFoundException("User not found");
+            return user;
         }
 
         public IEnumerable<User> GetAllUsers()
@@ -95,6 +98,10 @@ namespace crypto.Services
             var user = await ValidateUserAsync(username, password);
 
             // Generate the token
+            if (string.IsNullOrEmpty(user?.Username))
+            {
+                throw new ArgumentNullException(nameof(user.Username), "Username cannot be null or empty.");
+            }
             var token = createToken(user.Username);
 
             // Return user and token
@@ -149,7 +156,7 @@ namespace crypto.Services
             return tokenHandler.CreateToken(tokenDescriptor);
         }
 
-        public Task<User> GetUserByUsernameAsync(string username)
+        public Task<User?> GetUserByUsernameAsync(string username)
         {
             return _userRepository.GetUserByUsernameAsync(username);
         }
