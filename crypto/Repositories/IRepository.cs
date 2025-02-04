@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using crypto.Queries;
 
 namespace crypto.Repositories
 {
@@ -6,8 +7,8 @@ namespace crypto.Repositories
     {
         Task<T> SaveAsync(T entity);
         T Get(T entity);
-        T Update(T entity);
+        Task<T> UpdateAsync(T entity);
         bool Delete(int id);
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync(QueryObject query);
     }
 }

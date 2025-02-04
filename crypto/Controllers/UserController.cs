@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using crypto.Models;
 using crypto.Services;
 using crypto.Dtos;
+using crypto.Queries;
 
 namespace crypto.Controllers
 {
@@ -26,7 +27,7 @@ namespace crypto.Controllers
             try
             {
                 var createdUser = await _userService.CreateUserAsync(newUserDto);
-                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+                return CreatedAtAction(nameof(GetUserByIdAsync), new { id = createdUser.Id }, createdUser);
             }
             catch (ArgumentException ex)
             {
@@ -44,9 +45,9 @@ namespace crypto.Controllers
 
         // GET: api/User/{id}
         [HttpGet("{id}")]
-        public IActionResult GetUserById(int id)
+        public async Task<IActionResult> GetUserByIdAsync(int id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound(new { error = $"User with ID {id} not found." });
@@ -56,11 +57,11 @@ namespace crypto.Controllers
 
         // PUT: api/User/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] User updatedUser)
+        public IActionResult UpdateUser(int id, [FromBody] NewUserDto updatedUser)
         {
             try
             {
-                var user = _userService.Update(id, updatedUser);
+                var user = _userService.UpdateAsync(id, updatedUser);
                 if (user == null)
                 {
                     return NotFound(new { error = $"User with ID {id} not found." });
@@ -75,11 +76,11 @@ namespace crypto.Controllers
 
         // DELETE: api/User/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
-                var isDeleted = _userService.Delete(id);
+                var isDeleted = await _userService.DeleteAsync(id);
                 if (!isDeleted)
                 {
                     return NotFound(new { error = $"User with ID {id} not found." });
@@ -94,9 +95,9 @@ namespace crypto.Controllers
 
         // GET: api/User
         [HttpGet]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers([FromQuery] QueryObject query)
         {
-            var users = _userService.GetAllUsers();
+            var users = await _userService.GetAllUsersAsync(query);
             return Ok(users);
         }
     }

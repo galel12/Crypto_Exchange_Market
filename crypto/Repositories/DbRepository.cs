@@ -6,6 +6,7 @@ using crypto.Repositories;
 using crypto.Models;
 using crypto.Data;
 using Microsoft.EntityFrameworkCore;
+using crypto.Queries;
 
 namespace crypto.Repositories
 {
@@ -35,10 +36,10 @@ namespace crypto.Repositories
             return foundEntity;
         }
 
-        public T Update(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return entity;
         }
 
@@ -52,9 +53,37 @@ namespace crypto.Repositories
             return true;
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync(QueryObject query)
         {
-            return _dbSet.ToList();
+            var users = _dbSet.AsQueryable();
+
+            // Filtering
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                users = users.Where(u => EF.Property<string>(u, "Name").Contains(query.Name));
+            }
+            if (!string.IsNullOrEmpty(query.Username))
+            {
+                users = users.Where(u => EF.Property<string>(u, "Username").Contains(query.Username));
+            }
+
+            // Sorting
+            if(!string.IsNullOrEmpty(query.SortBy))
+            {
+                if(query.SortBy.Equals("Username", StringComparison.OrdinalIgnoreCase))
+                {
+                    users = query.IsAscending ? users.OrderBy(u => EF.Property<string>(u, "Username")) : users.OrderByDescending(u => EF.Property<string>(u, "Username"));
+                }
+                if(query.SortBy.Equals("DateCreated", StringComparison.OrdinalIgnoreCase))
+                {
+                    users = query.IsAscending ? users.OrderBy(u => EF.Property<DateTime>(u, "DateCreated")) : users.OrderByDescending(u => EF.Property<DateTime>(u, "DateCreated"));
+                }
+            }
+
+            // Pagination
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await users.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
     }
 }

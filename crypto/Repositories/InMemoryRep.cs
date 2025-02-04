@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using crypto.Repositories;
 using crypto.Models;
+using crypto.Queries;
 
 namespace crypto.Repositories
 {
@@ -32,14 +33,9 @@ namespace crypto.Repositories
             throw new NotImplementedException();
         }
 
-        public User? GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return _mockDb.FirstOrDefault((pair) => pair.Value.Username == username).Value;
-        }
-
-        public Task<User?> GetUserByUsernameAsync(string username)
-        {
-            throw new NotImplementedException();
         }
 
         public User Save(User entity)
@@ -67,9 +63,27 @@ namespace crypto.Repositories
             throw new NotImplementedException();
         }
 
-        public User Update(User entity)
+        public Task<IEnumerable<User>> GetAllAsync(QueryObject queryObject)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<User?> GetByIdAsync(int id)
+        {
+            return Task.FromResult(_mockDb.TryGetValue(id, out var user) ? user : null);
+        }
+        
+        public Task<User> UpdateAsync(User entity)
+        {
+            if (_mockDb.ContainsKey(entity.Id))
+            {
+                _mockDb[entity.Id] = entity;
+                return Task.FromResult(entity);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"User with Id {entity.Id} not found.");
+            }
         }
     }
 }
