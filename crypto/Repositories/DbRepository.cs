@@ -28,9 +28,9 @@ namespace crypto.Repositories
             return entity;
         }
 
-        public T Get(T entity)
+        public async Task<T> GetAsync(T entity)
         {
-            var foundEntity = _dbSet.Find(entity);
+            var foundEntity = await _dbSet.FindAsync(entity);
             if (foundEntity == null)
                 throw new InvalidOperationException("Entity not found.");
             return foundEntity;
@@ -43,13 +43,13 @@ namespace crypto.Repositories
             return entity;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var entity = _dbSet.Find(id);
+            var entity = await _dbSet.FindAsync(id);
             if (entity == null) return false;
 
             _dbSet.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 

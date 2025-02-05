@@ -22,7 +22,7 @@ namespace crypto.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] NewUserDto newUserDto)
+        public async Task<IActionResult> CreateUserAsync([FromBody] NewUserDto newUserDto)
        {
             try
             {
@@ -57,11 +57,11 @@ namespace crypto.Controllers
 
         // PUT: api/User/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] NewUserDto updatedUser)
+        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] NewUserDto updatedUser)
         {
             try
             {
-                var user = _userService.UpdateAsync(id, updatedUser);
+                var user = await _userService.UpdateAsync(id, updatedUser);
                 if (user == null)
                 {
                     return NotFound(new { error = $"User with ID {id} not found." });
@@ -76,7 +76,7 @@ namespace crypto.Controllers
 
         // DELETE: api/User/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUserAsync(int id)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace crypto.Controllers
 
         // GET: api/User
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers([FromQuery] QueryObject query)
+        public async Task<IActionResult> GetAllUsersAsync([FromQuery] QueryObject query)
         {
             var users = await _userService.GetAllUsersAsync(query);
             return Ok(users);

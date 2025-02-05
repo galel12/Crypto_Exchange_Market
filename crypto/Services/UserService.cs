@@ -81,7 +81,7 @@ namespace crypto.Services
                 throw new KeyNotFoundException("User not found");
 
             // Delete the user
-            return _userRepository.Delete(id);
+            return await _userRepository.DeleteAsync(id);
         }
 
         public async Task<User> GetUserByIdAsync(int id)
@@ -113,7 +113,7 @@ namespace crypto.Services
             return (user, token);
         }
 
-        public User GetUserByToken(SecurityToken token)
+        public async Task<User> GetUserByTokenAsync(SecurityToken token)
         {
             throw new NotImplementedException();
         }

@@ -20,7 +20,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-   public async Task<IActionResult> Login([FromBody] LoginRequest request)
+   public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
 {
     try
     {

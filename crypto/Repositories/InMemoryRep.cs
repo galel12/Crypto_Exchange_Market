@@ -13,12 +13,12 @@ namespace crypto.Repositories
         private readonly Dictionary<int, User> _mockDb = new Dictionary<int, User>();
         private int _nextId = -1;
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public User Get(User entity)
+        public async Task<User> GetAsync(User entity)
         {
             throw new NotImplementedException();
         }

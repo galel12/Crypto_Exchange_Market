@@ -6,9 +6,9 @@ namespace crypto.Repositories
     public interface IRepository<T>
     {
         Task<T> SaveAsync(T entity);
-        T Get(T entity);
+        Task<T> GetAsync(T entity);
         Task<T> UpdateAsync(T entity);
-        bool Delete(int id);
+        Task<bool> DeleteAsync(int id);
         Task<IEnumerable<T>> GetAllAsync(QueryObject query);
     }
 }

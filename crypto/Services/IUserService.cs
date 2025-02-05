@@ -10,7 +10,7 @@ namespace crypto.Services
         Task<User> CreateUserAsync(NewUserDto newUserDto);
         Task<User> UpdateAsync(int id, NewUserDto updatedUser);
         Task<(User user, SecurityToken token)> GetUserByLoginAsync(string username, string password);
-        User GetUserByToken(SecurityToken token);
+        Task<User> GetUserByTokenAsync(SecurityToken token);
         Task<User?> GetUserByUsernameAsync(string username);
         Task<bool> DeleteAsync(int id);
         Task<IEnumerable<User>> GetAllUsersAsync(QueryObject query);
