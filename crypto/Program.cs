@@ -6,9 +6,11 @@ using crypto.Services;
 using crypto.Repositories;
 using crypto.Models;
 using crypto.Data;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Env.Load(); // Loads variables from .env
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -24,8 +26,15 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod());
 });
 
+var postgresConnection = Environment.GetEnvironmentVariable("PostgresConnection");
+
+if (string.IsNullOrEmpty(postgresConnection))
+{
+    throw new ArgumentNullException("PostgresConnection environment variable is missing.");
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))
+    options.UseNpgsql(postgresConnection)
            .LogTo(Console.WriteLine, LogLevel.Information));
 
 //Add Dependencies injection

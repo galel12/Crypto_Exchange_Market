@@ -581,4 +581,8 @@ yarn-error.log
 #Ignore .zshrc file
 .zshrc
 
+# ignore environment file
+.env
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,aspnetcore,csharp,vuejs,macos
+
