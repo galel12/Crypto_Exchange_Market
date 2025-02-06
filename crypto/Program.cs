@@ -9,6 +9,10 @@ using crypto.Data;
 using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMvc(options =>
+{
+   options.SuppressAsyncSuffixInActionNames = false;
+});
 
 Env.Load(); // Loads variables from .env
 
