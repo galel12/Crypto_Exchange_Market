@@ -138,10 +138,10 @@ namespace crypto.Services
         private SecurityToken createToken(string username)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secret = jwtSettings["Secret"];
+            var secret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
             if (string.IsNullOrEmpty(secret))
             {
-                throw new ArgumentNullException("JWT Secret is not configured.");
+                throw new ArgumentNullException("JWT_SECRET_KEY environment variable is missing.");
             }
             var key = Encoding.ASCII.GetBytes(secret);
 

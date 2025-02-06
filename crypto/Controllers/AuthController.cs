@@ -20,24 +20,23 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-   public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
-{
-    try
+    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
-        // Validate user credentials asynchronously
-        var loginResult = await _userService.GetUserByLoginAsync(request.Username, request.Password);
+        try
+        {
+            var loginResult = await _userService.GetUserByLoginAsync(request.Username, request.Password);
 
-        // Generate the JWT token
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var tokenString = tokenHandler.WriteToken(loginResult.token);
+            // Generate the JWT token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenString = tokenHandler.WriteToken(loginResult.token);
 
-        // Return the token and user details
-        return Ok(new { Token = tokenString, User = loginResult.user });
+            // Return the token and user details
+            return Ok(new { Token = tokenString, User = loginResult.user });
+        }
+        catch (Exception)
+        {
+            // Handle errors (e.g., invalid credentials)
+            return Unauthorized("Invalid credentials.");
+        }
     }
-    catch (Exception)
-    {
-        // Handle errors (e.g., invalid credentials)
-        return Unauthorized("Invalid credentials.");
-    }
-}
 }

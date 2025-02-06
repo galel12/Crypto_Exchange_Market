@@ -1,5 +1,6 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using crypto.Services;
 using crypto.Repositories;
@@ -62,11 +63,11 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
 
-if(string.IsNullOrEmpty(jwtKey))
+if (string.IsNullOrEmpty(jwtKey))
 {
-    throw new ArgumentNullException("JWT configuration is missing.");
+    throw new ArgumentNullException("JWT_SECRET_KEY environment variable is missing.");
 }
 
 // Configure JWT authentication
@@ -75,7 +76,7 @@ builder.Services.AddAuthentication("Bearer")
     {
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
@@ -84,7 +85,7 @@ builder.Services.AddAuthentication("Bearer")
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes(jwtKey)
+                Encoding.UTF8.GetBytes(jwtKey)
             )
         };
     });
@@ -102,7 +103,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Ensure HTTPS redirection is enabled
 app.UseExceptionHandler("/Error");
 app.UseRouting();
 app.UseCors("AllowFrontend"); // Enable CORS middleware here
