@@ -17,7 +17,7 @@ namespace crypto.Repositories
             return await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<User?> GetByIdAsync(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Id == id);
         }

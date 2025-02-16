@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using BCrypt.Net;
 using crypto.Dtos;
 using crypto.Queries;
+using crypto.Mappers;
 
 namespace crypto.Services
 {
@@ -25,7 +26,7 @@ namespace crypto.Services
             _configuration = config;
         }
 
-        public async Task<User> CreateUserAsync(NewUserDto newUserDto)
+        public async Task<UserResponseDto> CreateUserAsync(NewUserDto newUserDto)
         {
             // Validate user input
             if (string.IsNullOrEmpty(newUserDto.Username))
@@ -51,12 +52,14 @@ namespace crypto.Services
             };
 
             // Save the user
-            return await _userRepository.SaveAsync(user);
+            var savedUser = await _userRepository.SaveAsync(user);
+
+            return UserMappers.MapToUserResponseDto(savedUser);
         }
 
-        public async Task<User> UpdateAsync(int id, NewUserDto updatedUser)
+        public async Task<UserResponseDto> UpdateAsync(int id, UpdateUserDto updatedUser)
         {
-            var existingUser = await _userRepository.GetByIdAsync(id);
+            var existingUser = await _userRepository.GetUserByIdAsync(id);
             if (existingUser == null)
                 throw new KeyNotFoundException("User not found");
 
@@ -71,12 +74,14 @@ namespace crypto.Services
             }
 
             // Save changes
-            return await _userRepository.UpdateAsync(existingUser);
+            var UpdatedUser = await _userRepository.UpdateAsync(existingUser);
+
+            return UserMappers.MapToUserResponseDto(UpdatedUser);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id);
             if (user == null)
                 throw new KeyNotFoundException("User not found");
 
@@ -84,17 +89,22 @@ namespace crypto.Services
             return await _userRepository.DeleteAsync(id);
         }
 
-        public async Task<User> GetUserByIdAsync(int id)
+        public async Task<UserResponseDto> GetUserByIdAsync(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id);
             if (user == null)
                 throw new KeyNotFoundException("User not found");
-            return user;
+
+            return UserMappers.MapToUserResponseDto(user);
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync(QueryObject query)
+        public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync(QueryObject query)
         {
-            return await _userRepository.GetAllAsync(query);
+            var users = await _userRepository.GetAllAsync(query);
+            // Map each User to a UserResponseDto
+            var userDtos = users.Select(user => UserMappers.MapToUserResponseDto(user));
+
+            return userDtos;
         }
 
         public async Task<(User user, SecurityToken token)> GetUserByLoginAsync(string username, string password)
@@ -161,9 +171,9 @@ namespace crypto.Services
             return tokenHandler.CreateToken(tokenDescriptor);
         }
 
-        public Task<User?> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            return _userRepository.GetUserByUsernameAsync(username);
+            return await _userRepository.GetUserByUsernameAsync(username);
         }
     }
 }

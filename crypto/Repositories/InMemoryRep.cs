@@ -68,7 +68,7 @@ namespace crypto.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<User?> GetByIdAsync(int id)
+        public Task<User?> GetUserByIdAsync(int id)
         {
             return Task.FromResult(_mockDb.TryGetValue(id, out var user) ? user : null);
         }

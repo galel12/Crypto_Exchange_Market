@@ -9,6 +9,8 @@ using crypto.Data;
 using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// enable async suffix in action names for controllers 
 builder.Services.AddMvc(options =>
 {
    options.SuppressAsyncSuffixInActionNames = false;
