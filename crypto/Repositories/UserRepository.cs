@@ -21,5 +21,10 @@ namespace crypto.Repositories
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Id == id);
         }
+
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            return await _dbSet.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        }
     }
 }

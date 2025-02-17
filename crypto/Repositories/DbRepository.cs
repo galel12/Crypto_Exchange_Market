@@ -58,10 +58,6 @@ namespace crypto.Repositories
             var users = _dbSet.AsQueryable();
 
             // Filtering
-            if (!string.IsNullOrEmpty(query.Name))
-            {
-                users = users.Where(u => EF.Property<string>(u, "Name").Contains(query.Name));
-            }
             if (!string.IsNullOrEmpty(query.Username))
             {
                 users = users.Where(u => EF.Property<string>(u, "Username").Contains(query.Username));

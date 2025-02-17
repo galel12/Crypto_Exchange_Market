@@ -47,6 +47,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<DbContext, AppDbContext>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 //builder.Services.AddSingleton<IUserRepository, InMemoryRep>();
 
 

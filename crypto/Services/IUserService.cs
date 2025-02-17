@@ -16,5 +16,7 @@ namespace crypto.Services
         Task<IEnumerable<UserResponseDto>> GetAllUsersAsync(QueryObject query);
         Task<UserResponseDto> GetUserByIdAsync(int id);
         Task<User?> ValidateUserAsync(string username, string password);
+        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
+        Task UpdateRefreshTokenAsync(int userId, string refreshToken, DateTime expiryTime);
     }
 }

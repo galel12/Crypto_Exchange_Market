@@ -45,10 +45,8 @@ namespace crypto.Repositories
 
             User user = new User{
                 Id = id,
-                Name = entity.Name,
                 Username = entity.Username,
                 HashPassword = entity.HashPassword
-           
             };
 
             _mockDb[id] = user;
@@ -84,6 +82,11 @@ namespace crypto.Repositories
             {
                 throw new KeyNotFoundException($"User with Id {entity.Id} not found.");
             }
+        }
+
+        public Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -18,12 +18,12 @@ namespace crypto.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public UserService(IUserRepository repo, IConfiguration config)
+        public UserService(IUserRepository repo, IConfiguration config, IAuthService authService)
         {
             _userRepository = repo;
-            _configuration = config;
+            _authService = authService;
         }
 
         public async Task<UserResponseDto> CreateUserAsync(NewUserDto newUserDto)
@@ -117,7 +117,7 @@ namespace crypto.Services
             {
                 throw new ArgumentNullException(nameof(user.Username), "Username cannot be null or empty.");
             }
-            var token = createToken(user.Username);
+            var token = _authService.GenerateToken(user.Username, "User");
 
             // Return user and token
             return (user, token);
@@ -145,35 +145,27 @@ namespace crypto.Services
             return user; // Authentication successful
         }
 
-        private SecurityToken createToken(string username)
-        {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
-            if (string.IsNullOrEmpty(secret))
-            {
-                throw new ArgumentNullException("JWT_SECRET_KEY environment variable is missing.");
-            }
-            var key = Encoding.ASCII.GetBytes(secret);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, username)
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                Issuer = jwtSettings["Issuer"],
-                Audience = jwtSettings["Audience"],
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.CreateToken(tokenDescriptor);
-        }
-
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return await _userRepository.GetUserByUsernameAsync(username);
+        }
+
+        public async Task UpdateRefreshTokenAsync(int userId, string refreshToken, DateTime expiryTime)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = expiryTime;
+
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            return await _userRepository.GetUserByRefreshTokenAsync(refreshToken);
         }
     }
 }

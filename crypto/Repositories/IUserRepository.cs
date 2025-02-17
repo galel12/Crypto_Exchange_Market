@@ -7,5 +7,6 @@ namespace crypto.Repositories
     {
         Task<User?> GetUserByUsernameAsync(string username);
         Task<User?> GetUserByIdAsync(int id); // Ensure this method is here
+        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
     }
 }
