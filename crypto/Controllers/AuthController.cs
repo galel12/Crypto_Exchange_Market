@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
+    public async Task<ActionResult<TokenResponseDto>> LoginAsync([FromBody] LoginRequest request)
     {
         try
         {
@@ -35,12 +35,12 @@ public class AuthController : ControllerBase
 
             // Generate and store refresh token
             var refreshToken = _authService.GenerateRefreshToken();
-            loginResult.user.RefreshToken = refreshToken;
-            loginResult.user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Refresh token valid for 7 days
-            await _userService.UpdateRefreshTokenAsync(loginResult.user.Id, refreshToken, DateTime.UtcNow.AddDays(7));  // Save to database
+            await _authService.saveRefreshTokenAsync(loginResult.user, refreshToken); 
+
+            var response = new TokenResponseDto { AccessToken = tokenString, RefreshToken = refreshToken };
 
             // Return the token and refresh token
-            return Ok(new { Token = tokenString, RefreshToken = refreshToken });
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -51,12 +51,12 @@ public class AuthController : ControllerBase
 
     // Refresh token endpoint
     [HttpPut]
-    public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenRequestDto Token)
+    public async Task<ActionResult<TokenResponseDto>> RefreshTokenAsync([FromBody] RefreshTokenRequestDto request)
     {
         try
         {
-            var newToken = await _authService.RefreshTokenAsync(Token.RefreshToken, _userService);
-            return Ok(new { Token = newToken });
+            var tokenResponse = await _authService.ValidateAndSaveRefreshTokenAsync(request);
+            return Ok(tokenResponse);
         }
         catch (UnauthorizedAccessException)
         {
@@ -67,4 +67,6 @@ public class AuthController : ControllerBase
             return StatusCode(500, "An error occurred while refreshing the token.");
         }
     }
+
+
 }

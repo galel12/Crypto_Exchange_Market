@@ -6,6 +6,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using crypto.Dtos;
+using crypto.Models;
+using crypto.Repositories;
 using Microsoft.IdentityModel.Tokens;
 
 namespace crypto.Services
@@ -13,10 +16,12 @@ namespace crypto.Services
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
+        private readonly IUserRepository _userRepository;
 
-        public AuthService(IConfiguration configuration)
+        public AuthService(IConfiguration configuration, IUserRepository userRepository)
         {
             _configuration = configuration;
+            _userRepository = userRepository;
         }
         public SecurityToken GenerateToken(string username, string role)
         {
@@ -35,7 +40,7 @@ namespace crypto.Services
                     new Claim(ClaimTypes.Name, username),
                     new Claim(ClaimTypes.Role, role)
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddMinutes(10),
                 Issuer = jwtSettings["Issuer"],
                 Audience = jwtSettings["Audience"],
                 SigningCredentials = new SigningCredentials(
@@ -89,24 +94,48 @@ namespace crypto.Services
             }
         }
 
-        public async Task<string> RefreshTokenAsync(string currentRefreshToken, IUserService userService)
+        public async Task<TokenResponseDto> ValidateAndSaveRefreshTokenAsync(RefreshTokenRequestDto request)
+        {   
+            try
+            {
+                var user = await validateRefreshTokenAsync(request.Id, request.RefreshToken);
+
+                // Generate new tokens
+                var newAccessToken = GenerateToken(user.Username, "User");
+                var newRefreshToken = GenerateRefreshToken();
+
+                await saveRefreshTokenAsync(user, newRefreshToken); // Save to database
+
+                var response = new TokenResponseDto
+                {
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                    RefreshToken = newRefreshToken
+                };
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private async Task<User?> validateRefreshTokenAsync(int id ,string refreshToken)
         {
-            var user = await userService.GetUserByRefreshTokenAsync(currentRefreshToken);
-            if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow || user.RefreshToken != refreshToken)
             {
                 throw new UnauthorizedAccessException("Invalid or expired refresh token.");
             }
+            return user;
+        }
 
-            // Generate new tokens
-            var newAccessToken = GenerateToken(user.Username, "User");
-            var newRefreshToken = GenerateRefreshToken();
-
+        public async Task saveRefreshTokenAsync(User user, string newRefreshToken)
+        {
             // Update user's refresh token and expiry time
             user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            await userService.UpdateRefreshTokenAsync(user.Id, newRefreshToken, DateTime.UtcNow.AddDays(7));
-
-            return new JwtSecurityTokenHandler().WriteToken(newAccessToken);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(30);
+            await _userRepository.UpdateAsync(user);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace crypto.Dtos
 {
     public class RefreshTokenRequestDto
     {
+        public int Id { get; set; }
         public string? RefreshToken { get; set; }
     }
 }

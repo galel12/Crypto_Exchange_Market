@@ -7,6 +7,7 @@ using crypto.Models;
 using crypto.Services;
 using crypto.Dtos;
 using crypto.Queries;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crypto.Controllers
 {
@@ -61,7 +62,8 @@ namespace crypto.Controllers
             }
 
         }
-
+        
+        [Authorize]
         // PUT: api/User/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] int id, [FromBody] UpdateUserDto updatedUser)
@@ -82,6 +84,7 @@ namespace crypto.Controllers
             }
         }
 
+        [Authorize]
         // DELETE: api/User/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] int id)

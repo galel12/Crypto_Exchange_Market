@@ -150,19 +150,6 @@ namespace crypto.Services
             return await _userRepository.GetUserByUsernameAsync(username);
         }
 
-        public async Task UpdateRefreshTokenAsync(int userId, string refreshToken, DateTime expiryTime)
-        {
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null)
-            {
-                throw new KeyNotFoundException("User not found");
-            }
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = expiryTime;
-
-            await _userRepository.UpdateAsync(user);
-        }
-
         public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
         {
             return await _userRepository.GetUserByRefreshTokenAsync(refreshToken);
