@@ -57,7 +57,7 @@ namespace crypto.Services
             return UserMappers.MapToUserResponseDto(savedUser);
         }
 
-        public async Task<UserResponseDto> UpdateAsync(int id, UpdateUserDto updatedUser)
+        public async Task<UserResponseDto> UpdateAsync(Guid id, UpdateUserDto updatedUser)
         {
             var existingUser = await _userRepository.GetUserByIdAsync(id);
             if (existingUser == null)
@@ -79,7 +79,7 @@ namespace crypto.Services
             return UserMappers.MapToUserResponseDto(UpdatedUser);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
             if (user == null)
@@ -89,7 +89,7 @@ namespace crypto.Services
             return await _userRepository.DeleteAsync(id);
         }
 
-        public async Task<UserResponseDto> GetUserByIdAsync(int id)
+        public async Task<UserResponseDto> GetUserByIdAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
             if (user == null)
@@ -117,7 +117,7 @@ namespace crypto.Services
             {
                 throw new ArgumentNullException(nameof(user.Username), "Username cannot be null or empty.");
             }
-            var token = _authService.GenerateToken(user.Username, "User");
+            var token = _authService.GenerateToken(user);
 
             // Return user and token
             return (user, token);

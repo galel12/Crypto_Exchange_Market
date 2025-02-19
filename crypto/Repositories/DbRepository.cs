@@ -43,7 +43,7 @@ namespace crypto.Repositories
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null) return false;

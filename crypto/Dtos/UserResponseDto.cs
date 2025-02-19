@@ -7,7 +7,7 @@ namespace crypto.Dtos
 {
      public record UserResponseDto
     (
-        int Id,
+        Guid Id,
         string Username,
         DateTime DateCreated
     );

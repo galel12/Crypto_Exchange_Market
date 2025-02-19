@@ -10,10 +10,10 @@ namespace crypto.Repositories
 {
     public class InMemoryRep : IUserRepository
     {
-        private readonly Dictionary<int, User> _mockDb = new Dictionary<int, User>();
+        private readonly Dictionary<Guid, User> _mockDb = new Dictionary<Guid, User>();
         private int _nextId = -1;
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -28,7 +28,7 @@ namespace crypto.Repositories
             throw new NotImplementedException();
         }
 
-        public User GetById(int id)
+        public User GetById(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -41,7 +41,7 @@ namespace crypto.Repositories
         public User Save(User entity)
         {
             //critical section
-            int id = ++_nextId;
+            Guid id = Guid.NewGuid();
 
             User user = new User{
                 Id = id,
@@ -66,7 +66,7 @@ namespace crypto.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<User?> GetUserByIdAsync(int id)
+        public Task<User?> GetUserByIdAsync(Guid id)
         {
             return Task.FromResult(_mockDb.TryGetValue(id, out var user) ? user : null);
         }

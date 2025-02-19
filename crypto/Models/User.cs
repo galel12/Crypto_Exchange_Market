@@ -7,10 +7,11 @@ namespace crypto.Models
 {
     public class User
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string? Username { get; set; }
         public string? HashPassword { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+        public string Role { get; set; } = "User"; // Default role
 
         //Refresh token
         public string? RefreshToken { get; set; }

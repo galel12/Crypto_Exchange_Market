@@ -8,7 +8,7 @@ namespace crypto.Repositories
         Task<T> SaveAsync(T entity);
         Task<T> GetAsync(T entity);
         Task<T> UpdateAsync(T entity);
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync(QueryObject query);
     }
 }

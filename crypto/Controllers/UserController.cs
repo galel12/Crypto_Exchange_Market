@@ -46,7 +46,7 @@ namespace crypto.Controllers
 
         // GET: api/User/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserByIdAsync([FromRoute] int id)
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute] Guid id)
         {
            try{
                 var userDto = await _userService.GetUserByIdAsync(id);
@@ -66,7 +66,7 @@ namespace crypto.Controllers
         [Authorize]
         // PUT: api/User/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute] int id, [FromBody] UpdateUserDto updatedUser)
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid id, [FromBody] UpdateUserDto updatedUser)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace crypto.Controllers
         [Authorize]
         // DELETE: api/User/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] int id)
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid id)
         {
             try
             {

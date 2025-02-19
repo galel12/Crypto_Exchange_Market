@@ -23,7 +23,7 @@ namespace crypto.Services
             _configuration = configuration;
             _userRepository = userRepository;
         }
-        public SecurityToken GenerateToken(string username, string role)
+        public SecurityToken GenerateToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var secret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
@@ -37,8 +37,8 @@ namespace crypto.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Role, role)
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(10),
                 Issuer = jwtSettings["Issuer"],
@@ -101,7 +101,7 @@ namespace crypto.Services
                 var user = await validateRefreshTokenAsync(request.Id, request.RefreshToken);
 
                 // Generate new tokens
-                var newAccessToken = GenerateToken(user.Username, "User");
+                var newAccessToken = GenerateToken(user);
                 var newRefreshToken = GenerateRefreshToken();
 
                 await saveRefreshTokenAsync(user, newRefreshToken); // Save to database
@@ -120,7 +120,7 @@ namespace crypto.Services
             }
         }
 
-        private async Task<User?> validateRefreshTokenAsync(int id ,string refreshToken)
+        private async Task<User?> validateRefreshTokenAsync(Guid id ,string refreshToken)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
             if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow || user.RefreshToken != refreshToken)

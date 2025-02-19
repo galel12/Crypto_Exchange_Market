@@ -12,7 +12,7 @@ namespace crypto.Services
 {
     public interface IAuthService
     {
-        SecurityToken GenerateToken(string username, string role);
+        SecurityToken GenerateToken(User user);
         ClaimsPrincipal? ValidateToken(string token);
         string GenerateRefreshToken();
         Task<TokenResponseDto> ValidateAndSaveRefreshTokenAsync(RefreshTokenRequestDto request);
