@@ -44,6 +44,7 @@ Crypto-Exchange-Marketplace/
 │   ├── Dtos/             # Data Transfer Objects (e.g., NewUserDto.cs)
 │   ├── Data/             # Database context (e.g., AppDbContext.cs)
 │   ├── Docker/           # Docker configuration for PostgreSQL (docker-compose.yml)
+│   ├── Startup/          # Start-up configurations for Program.cs file
 │   ├── appsettings.json  # Configuration file for DB connection, JWT, etc.
 │   ├── Program.cs        # Main entry point of the backend and application configuration
 │
