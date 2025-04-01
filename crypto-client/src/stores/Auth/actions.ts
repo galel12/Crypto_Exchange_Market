@@ -32,13 +32,13 @@ export const actions: {
         throw new Error(data.message || "Login failed");
       }
 
-      this.user = data.user;
-      this.token = data.token;
+      this.token = data.accessToken; // Update to use accessToken
+      const refreshToken = data.refreshToken; // Store refreshToken
 
-      // Save the token to localStorage for persistence
-      if (this.token && this.user) {
+      if (this.token && refreshToken) {
         localStorage.setItem("token", this.token);
-        localStorage.setItem('userName', this.user.username);
+        localStorage.setItem("refreshToken", refreshToken); // Save refresh token
+
       } else {
         console.warn("Token is null, not saving to localStorage");
       }
@@ -74,17 +74,13 @@ export const actions: {
       }
 
       const data = await response.json();
-      this.user = data.user;
-      this.token = data.token;
 
-      // Save the token to localStorage for persistence
-      if (this.token && this.user) {
-        localStorage.setItem("token", this.token);
-        localStorage.setItem('userName', this.user.username);
-      } else {
-        console.warn("Token is null, not saving to localStorage");
-      }
+      this.user = {
+        username: data.username,
+      };
 
+      localStorage.setItem('userName', this.user.username);
+      
       // Update success message
       this.successMessage = "Sign-up successful! You can now log in.";
     } catch (error: unknown) {
@@ -102,5 +98,6 @@ export const actions: {
     this.token = null;
     localStorage.removeItem("token"); // Clear token from localStorage
     localStorage.removeItem("userName"); // Clear user Name from localStorage
+    localStorage.removeItem("refreshToken"); // Clear refreshToken from localStorage
   },
 };

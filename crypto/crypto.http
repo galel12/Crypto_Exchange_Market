@@ -1,6 +1,21 @@
 @crypto_HostAddress = http://localhost:5040
 
-GET {{crypto_HostAddress}}/weatherforecast/
+### Test User Login
+POST {{crypto_HostAddress}}/api/Auth
+accept: text/plain
+Content-Type: application/json
+
+{
+    "username": "Gal",
+    "password": "123"
+}
+
+### Get Users Sorted by Date Created (Ascending)
+GET {{crypto_HostAddress}}/api/User?sortBy=DateCreated&isAscending=true
+Content-Type: application/json
 Accept: application/json
 
-###
+### Get Users with Pagination
+GET {{crypto_HostAddress}}/api/User?pageNumber=1&pageSize=2
+Content-Type: application/json
+Accept: application/json

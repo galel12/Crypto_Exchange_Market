@@ -8,13 +8,15 @@ using crypto.Services;
 using crypto.Repositories;
 using crypto.Data;
 
-
 namespace crypto.Startup
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection ConfigureServices(this IServiceCollection services, string postgresConnection)
+        public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
+            var postgresConnection = Environment.GetEnvironmentVariable("PostgresConnection")
+                ?? throw new ArgumentNullException("PostgresConnection environment variable is missing.");
+
             // enable async suffix in action names for controllers 
             services.AddMvc(options =>
             {

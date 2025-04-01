@@ -5,12 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 Env.Load(); // Load environment variables
 
-var postgresConnection = Environment.GetEnvironmentVariable("PostgresConnection") 
-    ?? throw new ArgumentNullException("PostgresConnection environment variable is missing.");
-
 // Register all application services
 builder.Services
-    .ConfigureServices(postgresConnection)
+    .ConfigureServices()
     .ConfigureAuthentication(builder.Configuration)
     .ConfigureCors()
     .ConfigureSwagger();
